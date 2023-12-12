@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View, FlatList, TextInput, TouchableOpacity, SafeAreaView} from 'react-native';
+import { StyleSheet, Text, View, FlatList, TextInput, TouchableOpacity, SafeAreaView, Image} from 'react-native';
 
 export default function App() {
   const [newGoal, setNewGoal] = useState('');
@@ -10,7 +10,7 @@ export default function App() {
     if (newGoal.trim() === '') {
       return;
     }
-    
+
     const newId = (parseInt(goals[goals.length - 1].id) + 1).toString();
     const newGoalItem = { id: newId, title: `Objectif ${newId}`, description: newGoal };
 
@@ -18,16 +18,25 @@ export default function App() {
     setNewGoal('');
   };
 
+  const deleteGoal = (id) => {
+     const updatedGoals = goals.filter((goal) => goal.id !== id);
+  setGoals(updatedGoals);
+  }
+
   const renderItem = ({ item }) => (
-    <View style={{ padding: 16, borderBottomWidth: 1, borderBottomColor: '#ccc' }}>
-      <Text style={{ fontSize: 18, fontWeight: 'bold' }}>{item.title}</Text>
-      <Text>{item.description}</Text>
+    <View style={{ padding: 16, borderBottomWidth: 1, borderBottomColor: '#ccc', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+      <View>
+        <Text style={{ fontSize: 15, fontWeight: 'bold' }}>{item.description}</Text>
+      </View>
+      <TouchableOpacity style={styles.deleteButton} onPress={() => deleteGoal(item.id)}>
+        <Image source={require('./assets/red-cross.png')} style={{ width: 20, height: 20 }} />
+    </TouchableOpacity>
     </View>
   );
 
   return (
     <SafeAreaView style={styles.container}>
-      <Text>Liste d'Objectif</Text>
+      <Text style={styles.title}>Liste d'Objectif</Text>
       <View style={styles.inputContainer}>
         <TextInput
           style={styles.input}
@@ -48,6 +57,11 @@ export default function App() {
 }
 
 const styles = StyleSheet.create({
+  title: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    marginBottom: 16,
+  },
   container: {
     flex: 1,
     backgroundColor: '#fff',
@@ -78,19 +92,24 @@ const styles = StyleSheet.create({
   addButtonText: {
     color: 'white',
     fontSize: 16,
+  },
+  deleteButton: {
+    padding: 10,
+    borderRadius: 5,
+    marginLeft: 10,
   }
 });
 
 const sampleGoals = [
-  { id: '1', title: 'Objectif 1', description: 'Faire les courses' },
-  { id: '2', title: 'Objectif 2', description: 'Aller à la salle de sport 3 fois par semaine' },
-  { id: '3', title: 'Objectif 3', description: 'Monter à plus de 5000m d altitude' },
-  { id: '4', title: 'Objectif 4', description: 'Acheter mon premier appartement' },
-  { id: '5', title: 'Objectif 5', description: 'Perdre 5 kgs' },
-  { id: '6', title: 'Objectif 6', description: 'Gagner en productivité' },
-  { id: '7', title: 'Objectif 7', description: 'Apprendre un nouveau langage' },
-  { id: '8', title: 'Objectif 8', description: 'Faire une mission en freelance' },
-  { id: '9', title: 'Objectif 9', description: 'Organiser un meetup autour de la tech' },
-  { id: '10', title: 'Objectif 10', description: 'Faire un triathlon' },
+  { id: '1', description: 'Faire les courses' },
+  { id: '2', description: 'Aller à la salle de sport 3 fois par semaine' },
+  { id: '3', description: 'Monter à plus de 5000m d altitude' },
+  { id: '4', description: 'Acheter mon premier appartement' },
+  { id: '5', description: 'Perdre 5 kgs' },
+  { id: '6', description: 'Gagner en productivité' },
+  { id: '7', description: 'Apprendre un nouveau langage' },
+  { id: '8', description: 'Faire une mission en freelance' },
+  { id: '9', description: 'Organiser un meetup autour de la tech' },
+  { id: '10', description: 'Faire un triathlon' },
 ];
 
