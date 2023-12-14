@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View, FlatList, TextInput, TouchableOpacity, SafeAreaView, Image, Modal, Button, Alert} from 'react-native';
+import { TouchableRipple } from 'react-native-paper';
 
 const App = () => {
   const [newGoal, setNewGoal] = useState('');
@@ -66,15 +67,17 @@ const App = () => {
   };
 
   const renderItem = ({ item }) => (
+   <TouchableRipple
+    onPress={() => openModal(item)}
+    style={{ borderRadius: 25, marginVertical: 8 }}
+  >
     <View style={{ padding: 16, borderBottomWidth: 1, borderBottomColor: '#ccc', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
-      <TouchableOpacity
-        onPress={() => openModal(item)}>
-            <Text style={{ fontSize: 15, fontWeight: 'bold' }}>{item.description}</Text>
-  </TouchableOpacity>
-      <TouchableOpacity style={styles.deleteButton} onPress={() => deleteGoal(item.id)}>
-        <Image source={require('./assets/red-cross.png')} style={{ width: 20, height: 20 }} />
-    </TouchableOpacity>
+        <Text style={{ fontSize: 15, fontWeight: 'bold', marginRight: 5 }}>{item.description}</Text>
+        <TouchableRipple style={styles.deleteButton} onPress={() => deleteGoal(item.id)}>
+      <Image source={require('./assets/red-cross.png')} style={{ width: 20, height: 20 }} />
+      </TouchableRipple>
     </View>
+  </TouchableRipple>
   );
 
   return (
@@ -156,11 +159,6 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     marginLeft: 10,
   },
-    editButton: {
-    padding: 10,
-    borderRadius: 5,
-    marginLeft: 10,
-  },
   modalContainer: {
     flex: 1,
     justifyContent: 'center',
@@ -180,9 +178,14 @@ const styles = StyleSheet.create({
 const sampleGoals = [
   { id: '1', description: 'Faire les courses' },
   { id: '2', description: 'Aller à la salle de sport 3 fois par semaine' },
-  { id: '3', description: 'Offrir une bague à ma fam' },
-  { id: '4', description: 'Emmenager avec ma fam' },
-  { id: '5', description: 'Emmener ma fam au resto' },
+  { id: '3', description: 'Monter à plus de 5000m d altitude' },
+  { id: '4', description: 'Acheter mon premier appartement' },
+  { id: '5', description: 'Perdre 5 kgs' },
+  { id: '6', description: 'Gagner en productivité' },
+  { id: '7', description: 'Apprendre un nouveau langage' },
+  { id: '8', description: 'Faire une mission en freelance' },
+  { id: '9', description: 'Organiser un meetup autour de la tech' },
+  { id: '10', description: 'Faire un triathlon' },
 ];
 
 export default App;
