@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View, FlatList, TextInput, TouchableOpacity, SafeAreaView, Image, Modal, Button, Alert} from 'react-native';
+import { StyleSheet, Text, View, FlatList, TextInput, TouchableOpacity, SafeAreaView, Image, Modal, Button, Alert, ImageBackground} from 'react-native';
 import { TouchableRipple } from 'react-native-paper';
 
 const App = () => {
@@ -82,6 +82,7 @@ const App = () => {
 
   return (
     <SafeAreaView style={styles.container}>
+      <ImageBackground source={require('./assets/background-image.jpg')}>
       <Text style={styles.title}>Liste d'Objectif</Text>
       <View style={styles.inputContainer}>
         <TextInput
@@ -92,7 +93,7 @@ const App = () => {
         />
         <TouchableOpacity style={styles.addButton}>
           <Text style={styles.addButtonText} onPress={addGoal}>
-            Add
+            Ajouter
           </Text>
         </TouchableOpacity>
       </View>
@@ -113,6 +114,7 @@ const App = () => {
         </View>
       </Modal>
       <StatusBar style="auto" />
+      </ImageBackground>
     </SafeAreaView>
   );
 }
@@ -122,6 +124,7 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: 'bold',
     marginBottom: 16,
+    textAlign: 'center'
   },
   container: {
     flex: 1,
