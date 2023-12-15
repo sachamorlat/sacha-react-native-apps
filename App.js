@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View, FlatList, TextInput, TouchableOpacity, SafeAreaView, Image, Modal, Button, Alert, ImageBackground} from 'react-native';
+import {Text, View, FlatList, TextInput, TouchableOpacity, SafeAreaView, Image, Modal, Button, Alert, ImageBackground} from 'react-native';
 import { TouchableRipple } from 'react-native-paper';
+import styles from './Styles';
 
 const App = () => {
   const [newGoal, setNewGoal] = useState('');
@@ -50,7 +51,7 @@ const App = () => {
       return;
     }
   
-    if (goals.some((goal) => goal.description === newGoal && goal.id !== selectedGoal.id)) {
+    if (goals.some((goal) => goal.description.trim() === newGoal.trim() && goal.id !== selectedGoal.id)) {
       Alert.alert('Objectif existant', 'Le nom que vous avez saisis existe déjà dans votre liste, veuillez saisir un autre nom.', [
         {text: 'OK'},
       ]);
@@ -67,9 +68,8 @@ const App = () => {
   };
 
   const renderItem = ({ item }) => (
-   <TouchableRipple
+  <TouchableRipple
     onPress={() => openModal(item)}
-    style={{ borderRadius: 25, marginVertical: 8 }}
   >
     <View style={{ padding: 16, borderBottomWidth: 1, borderBottomColor: '#ccc', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
         <Text style={{ fontSize: 15, fontWeight: 'bold', marginRight: 5 }}>{item.description}</Text>
@@ -90,7 +90,7 @@ const App = () => {
           placeholder="Nouvel objectif..."
           value={newGoal}
           onChangeText={(text) => setNewGoal(text)}
-        />
+          />
         <TouchableOpacity style={styles.addButton}>
           <Text style={styles.addButtonText} onPress={addGoal}>
             Ajouter
@@ -118,65 +118,6 @@ const App = () => {
     </SafeAreaView>
   );
 }
-
-const styles = StyleSheet.create({
-  title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    marginBottom: 16,
-    textAlign: 'center'
-  },
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  inputContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingHorizontal: 5,
-  },
-  input: {
-    flex: 1,
-    height: 40,
-    borderColor: 'gray',
-    borderWidth: 1,
-    marginBottom: 10,
-    paddingHorizontal: 8,
-    borderRadius: 5,
-  },
-  addButton: {
-    backgroundColor: '#08F',
-    padding: 10,
-    borderRadius: 5,
-    alignItems: 'center',
-    marginLeft: 10,
-  },
-  addButtonText: {
-    color: 'white',
-    fontSize: 16,
-  },
-  deleteButton: {
-    padding: 10,
-    borderRadius: 5,
-    marginLeft: 10,
-  },
-  modalContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  modalInput: {
-    width: '80%',
-    height: 40,
-    borderColor: 'gray',
-    borderWidth: 1,
-    marginBottom: 16,
-    paddingHorizontal: 8,
-    borderRadius: 5,
-  },
-});
 
 const sampleGoals = [
   { id: '1', description: 'Faire les courses' },
