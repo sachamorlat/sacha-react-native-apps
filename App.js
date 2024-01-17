@@ -3,23 +3,40 @@ import { StyleSheet, Text, View, ImageBackground } from 'react-native';
 import * as Location from 'expo-location';
 
 export default function App() {
-  const [weatherData, setWeatherData] = useState(null);
-  const [location, setLocation] = useState(null);
+  const [currentWeather, setCurrentWeather] = useState(null);
+  const [forecastData, setForecastData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [errorMsg, setErrorMsg] = useState(null);
 
 
   useEffect(() => {
-
-    const fetchWeatherData = async (latitude, longitude) => {
+    const fetchData = async () => {
       try {
         const apiKey = 'e874cdfb8480b2da7baccdfe83fc03b6';
-        const apiUrl = `https://api.openweathermap.org/data/2.5/weather?units=metric&lat=${latitude}&lon=${longitude}&appid=${apiKey}`;
+        const { status } = await Location.requestForegroundPermissionsAsync();
 
-        const response = await fetch(apiUrl);
-        const data = await response.json();
+        if (status !== 'granted') {
+          setErrorMsg('Permission de localisation refusée');
+          setLoading(false);
+          return;
+        }
 
-        setWeatherData(data);
+        const location = await Location.getCurrentPositionAsync({});
+        const latitude = location.coords.latitude;
+        const longitude = location.coords.longitude;
+
+        // Fetch current weather
+        const currentWeatherUrl = `https://api.openweathermap.org/data/2.5/weather?units=metric&lat=${latitude}&lon=${longitude}&appid=${apiKey}`;
+        const currentWeatherResponse = await fetch(currentWeatherUrl);
+        const currentWeatherData = await currentWeatherResponse.json();
+        setCurrentWeather(currentWeatherData);
+
+        // Fetch forecast data
+        const forecastUrl = `https://api.openweathermap.org/data/2.5/forecast?lat=${latitude}&lon=${longitude}&appid=${apiKey}&units=metric`;
+        const forecastResponse = await fetch(forecastUrl);
+        const forecastData = await forecastResponse.json();
+        setForecastData(forecastData.list);
+
         setLoading(false);
       } catch (error) {
         console.error('Erreur lors de la récupération des données météorologiques:', error);
@@ -27,23 +44,7 @@ export default function App() {
       }
     };
 
-    const fetchLocation = async () => {
-      try {
-        let { status } = await Location.requestForegroundPermissionsAsync();
-        if (status !== 'granted') {
-          setErrorMsg('Permission de localisation refusée');
-          setLoading(false);
-          return;
-        }
-        let location = await Location.getCurrentPositionAsync({});
-        setLocation(location.coords);
-        fetchWeatherData(location.coords.latitude, location.coords.longitude);
-      } catch (error) {
-        console.error('Erreur lors de la récupération de la localisation:', error);
-        setLoading(false);
-      }
-    };
-    fetchLocation();
+    fetchData();
   }, []);
 
 
@@ -87,17 +88,33 @@ export default function App() {
         <Text>Chargement...</Text>
       ) : errorMsg ? (
         <Text>{errorMsg}</Text>
-      ) : weatherData ? (
+      ) : currentWeather && forecastData ? (
         <>
           <ImageBackground
-            source={chooseWeatherGif(weatherData.weather[0].icon)}
+            // source={chooseWeatherGif(weatherData.weather[0].icon)}
+            source={chooseWeatherGif(currentWeather.weather[0].icon)}
             style={{ width: 200, height: 200 }}
           />
-          <Text>Ville: {weatherData.name}</Text>
-          <Text>Température: {weatherData.main.temp} °C</Text>
-          <Text>Temps: {weatherData.weather[0].description}</Text>
-          <Text>Latitude: {weatherData.coord.lat}</Text>
-          <Text>Longitude: {weatherData.coord.lon}</Text>
+          <Text>Ville: {currentWeather.name}</Text>
+          <Text>Température: {currentWeather.main.temp} °C</Text>
+          <Text>Temps: {currentWeather.weather[0].description}</Text>
+          <Text>Latitude: {currentWeather.coord.lat}</Text>
+          <Text>Longitude: {currentWeather.coord.lon}</Text>
+
+          {/* Afficher les prévisions sur 5 jours */}
+          {forecastData.reduce((uniqueForecasts, forecast) => {
+            const date = forecast.dt_txt.split(' ')[0];
+            if (!uniqueForecasts.find((item) => item.date === date)) {
+              uniqueForecasts.push({ date, forecast });
+            }
+            return uniqueForecasts;
+          }, []).map((item, index) => (
+            <View key={index}>
+              <Text>Date: {item.date}</Text>
+              <Text>Température: {item.forecast.main.temp} °C</Text>
+              {/* Ajoutez d'autres informations de prévision au besoin */}
+            </View>
+          ))}
         </>
       ) : (
         <Text>Données météorologiques non disponibles</Text>
