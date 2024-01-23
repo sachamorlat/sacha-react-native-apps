@@ -1,8 +1,16 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, Text, View, ImageBackground } from 'react-native';
+import { StyleSheet, Text, View, ImageBackground, ScrollView, ActivityIndicator } from 'react-native';
 import * as Location from 'expo-location';
 
-export default function App() {
+const WeatherCard = ({ date, temperature, weatherIcon }) => (
+  <View style={styles.weatherCard}>
+    <Text>Date: {date}</Text>
+    <ImageBackground source={weatherIcon} style={{ width: 50, height: 50 }} />
+    <Text>Température: {temperature} °C</Text>
+  </View>
+);
+
+const App = () =>  {
   const [currentWeather, setCurrentWeather] = useState(null);
   const [forecastData, setForecastData] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -85,7 +93,7 @@ export default function App() {
   return (
     <View style={styles.container}>
       {loading ? (
-        <Text>Chargement...</Text>
+        <ActivityIndicator size="large" color="#0000ff" />
       ) : errorMsg ? (
         <Text>{errorMsg}</Text>
       ) : currentWeather && forecastData ? (
@@ -102,6 +110,7 @@ export default function App() {
           <Text>Longitude: {currentWeather.coord.lon}</Text>
 
           {/* Afficher les prévisions sur 5 jours */}
+          <ScrollView horizontal>
           {forecastData.reduce((uniqueForecasts, forecast) => {
             const date = forecast.dt_txt.split(' ')[0];
             if (!uniqueForecasts.find((item) => item.date === date)) {
@@ -109,12 +118,14 @@ export default function App() {
             }
             return uniqueForecasts;
           }, []).map((item, index) => (
-            <View key={index}>
-              <Text>Date: {item.date}</Text>
-              <Text>Température: {item.forecast.main.temp} °C</Text>
-              {/* Ajoutez d'autres informations de prévision au besoin */}
-            </View>
+            <WeatherCard
+            key={index}
+            date={item.date}
+            temperature={item.forecast.main.temp}
+            weatherIcon={chooseWeatherGif(item.forecast.weather[0].icon)}
+          />
           ))}
+          </ScrollView>
         </>
       ) : (
         <Text>Données météorologiques non disponibles</Text>
@@ -139,3 +150,5 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
 });
+
+export default App;
