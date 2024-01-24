@@ -1,14 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, Text, View, ImageBackground, ScrollView, ActivityIndicator } from 'react-native';
+import { Text, View, Image, ImageBackground, ScrollView } from 'react-native';
 import * as Location from 'expo-location';
+import Loader from './Loader';
+import WeatherCard from './WeatherCard';
+import styles from './styles';
 
-const WeatherCard = ({ date, temperature, weatherIcon }) => (
-  <View style={styles.weatherCard}>
-    <Text>Date: {date}</Text>
-    <ImageBackground source={weatherIcon} style={{ width: 50, height: 50 }} />
-    <Text>Température: {temperature} °C</Text>
-  </View>
-);
 
 const App = () =>  {
   const [currentWeather, setCurrentWeather] = useState(null);
@@ -91,64 +87,66 @@ const App = () =>  {
 
 
   return (
-    <View style={styles.container}>
-      {loading ? (
-        <ActivityIndicator size="large" color="#0000ff" />
-      ) : errorMsg ? (
-        <Text>{errorMsg}</Text>
-      ) : currentWeather && forecastData ? (
-        <>
-          <ImageBackground
-            // source={chooseWeatherGif(weatherData.weather[0].icon)}
-            source={chooseWeatherGif(currentWeather.weather[0].icon)}
-            style={{ width: 200, height: 200 }}
-          />
-          <Text>Ville: {currentWeather.name}</Text>
-          <Text>Température: {currentWeather.main.temp} °C</Text>
-          <Text>Temps: {currentWeather.weather[0].description}</Text>
-          <Text>Latitude: {currentWeather.coord.lat}</Text>
-          <Text>Longitude: {currentWeather.coord.lon}</Text>
+    <ImageBackground
+      source={require('./assets/background.jpg')} 
+      style={{ flex: 1, resizeMode: 'cover', justifyContent: 'center' }}
+    >
+      <View style={styles.container}>
+        {loading ? (
+          <Loader />
+        ) : errorMsg ? (
+          <Text>{errorMsg}</Text>
+        ) : currentWeather && forecastData ? (
+          <>
+            <Image
+              // source={chooseWeatherGif(weatherData.weather[0].icon)}
+              source={{
+                uri: `http://openweathermap.org/img/wn/${currentWeather.weather[0].icon}.png`,
+              }}
+              style={styles.weatherIcon}
+            />
+              <Text style={styles.weatherDataText}>
+                Ville: {currentWeather.name}
+              </Text>
+              <Text style={styles.weatherDataText}>
+                Température: {currentWeather.main.temp} °C
+                </Text>
+              <Text style={styles.weatherDataText}>
+                Temps: {currentWeather.weather[0].description}
+              </Text>
+              <Text style={styles.weatherDataText}>
+                Latitude: {currentWeather.coord.lat}
+              </Text>
+              <Text style={styles.weatherDataText}>
+                Longitude: {currentWeather.coord.lon}
+              </Text>
 
-          {/* Afficher les prévisions sur 5 jours */}
-          <ScrollView horizontal>
-          {forecastData.reduce((uniqueForecasts, forecast) => {
-            const date = forecast.dt_txt.split(' ')[0];
-            if (!uniqueForecasts.find((item) => item.date === date)) {
-              uniqueForecasts.push({ date, forecast });
-            }
-            return uniqueForecasts;
-          }, []).map((item, index) => (
-            <WeatherCard
-            key={index}
-            date={item.date}
-            temperature={item.forecast.main.temp}
-            weatherIcon={chooseWeatherGif(item.forecast.weather[0].icon)}
-          />
-          ))}
-          </ScrollView>
-        </>
-      ) : (
-        <Text>Données météorologiques non disponibles</Text>
-      )}
-    </View>
+            {/* Afficher les prévisions sur 5 jours */}
+            <ScrollView style={styles.scrollView}>
+            {forecastData.reduce((uniqueForecasts, forecast) => {
+              const date = forecast.dt_txt.split(' ')[0];
+              if (!uniqueForecasts.find((item) => item.date === date)) {
+                uniqueForecasts.push({ date, forecast });
+              }
+              return uniqueForecasts;
+            }, []).map((item, index) => (
+              <WeatherCard
+              key={index}
+              date={item.date}
+              temperature={item.forecast.main.temp}
+              weatherIcon={{
+                uri: `http://openweathermap.org/img/wn/${item.forecast.weather[0].icon}.png`,
+              }}
+            />
+            ))}
+            </ScrollView>
+          </>
+        ) : (
+          <Text>Données météorologiques non disponibles</Text>
+        )}
+      </View>
+    </ImageBackground>
   );
-}
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  backgroundImage: {
-    flex: 1,
-    resizeMode: 'cover', // ou 'stretch' selon votre préférence
-  },
-  text: {
-    color: 'white',
-    fontSize: 18,
-    marginBottom: 10,
-  },
-});
+};
 
 export default App;
