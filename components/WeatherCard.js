@@ -11,7 +11,7 @@ const WeatherCard = ({
   weatherDescription,
 }) => (
   <View style={styles.weatherCard}>
-    <Text style={styles.date}>Prévisions pour le: {date}</Text>
+    <Text style={styles.date}>Prévisions pour le {date}</Text>
     <Image source={weatherIcon} style={styles.weatherIcon} />
     <Text style={styles.temperature}>{temperature}°C</Text>
     <Text>Min: {minTemperature}°C, Max: {maxTemperature}°C</Text>

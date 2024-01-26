@@ -1,6 +1,7 @@
 import React from "react";
 import { ScrollView } from "react-native";
 import WeatherCard from "./WeatherCard";
+import { format } from "date-fns";
 
 const WeatherForecast = ({ forecastData }) => {
   const currentDate = new Date().toISOString().split("T")[0]; // Date actuelle
@@ -9,7 +10,7 @@ const WeatherForecast = ({ forecastData }) => {
     <ScrollView horizontal>
       {forecastData
         .reduce((uniqueForecasts, forecast) => {
-          const date = forecast.dt_txt.split(" ")[0];
+          const date = format(forecast.dt_txt.split(" ")[0], "dd.MM.yyyy"); // Format Date 
           if (
             date !== currentDate &&
             !uniqueForecasts.find((item) => item.date === date)
@@ -19,7 +20,8 @@ const WeatherForecast = ({ forecastData }) => {
               forecast,
               temperature: forecast.main.temp,               
               minTemperature: forecast.main.temp_min,
-              maxTemperature: forecast.main.temp_max 
+              maxTemperature: forecast.main.temp_max,
+              weatherDescription: forecast.weather[0].description.charAt(0).toUpperCase() + forecast.weather[0].description.slice(1) // Mettre une Majuscule
             });
           }
           return uniqueForecasts;
@@ -31,7 +33,7 @@ const WeatherForecast = ({ forecastData }) => {
             temperature={Math.round(item.temperature)}
             minTemperature={Math.round(item.minTemperature)}
             maxTemperature={Math.round(item.maxTemperature)}
-            weatherDescription={item.forecast.weather[0].description}
+            weatherDescription={item.weatherDescription}
             weatherIcon={{
               uri: `http://openweathermap.org/img/wn/${item.forecast.weather[0].icon}.png`,
             }}

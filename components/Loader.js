@@ -5,7 +5,7 @@ import styles from "./styles";
 const Loader = () => (
   <View style={styles.loader}>
     <ActivityIndicator size="large" color="#0000ff" />
-    <Text>Chargement...</Text>
+    <Text>Chargement des données météorologique...</Text>
   </View>
 );
 
