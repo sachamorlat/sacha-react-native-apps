@@ -14,7 +14,13 @@ const WeatherForecast = ({ forecastData }) => {
             date !== currentDate &&
             !uniqueForecasts.find((item) => item.date === date)
           ) {
-            uniqueForecasts.push({ date, forecast });
+            uniqueForecasts.push({ 
+              date, 
+              forecast,
+              temperature: forecast.main.temp,               
+              minTemperature: forecast.main.temp_min,
+              maxTemperature: forecast.main.temp_max 
+            });
           }
           return uniqueForecasts;
         }, [])
@@ -22,7 +28,9 @@ const WeatherForecast = ({ forecastData }) => {
           <WeatherCard
             key={index}
             date={item.date}
-            temperature={Math.round(item.forecast.main.temp)}
+            temperature={Math.round(item.temperature)}
+            minTemperature={Math.round(item.minTemperature)}
+            maxTemperature={Math.round(item.maxTemperature)}
             weatherDescription={item.forecast.weather[0].description}
             weatherIcon={{
               uri: `http://openweathermap.org/img/wn/${item.forecast.weather[0].icon}.png`,

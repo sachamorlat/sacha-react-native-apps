@@ -14,7 +14,6 @@ const App = () => {
   };
 
   function chooseWeatherGif(weatherCode) {
-    console.log(weatherCode);
     switch (weatherCode) {
       case "01d": // Clear sky (day)
         return require("./assets/clear.gif");

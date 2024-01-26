@@ -20,7 +20,7 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     alignItems: "center",
     height: 200,
-    opacity: 0.8,
+    opacity: 0.7,
   },
   weatherInfo: {
     margin: 10,
@@ -28,7 +28,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
     borderRadius: 8,
     alignItems: "center",
-    opacity: 0.8,
+    opacity: 0.7,
   },
   loader: {
     flex: 1,

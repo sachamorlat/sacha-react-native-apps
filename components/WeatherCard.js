@@ -5,6 +5,8 @@ import styles from "./styles";
 const WeatherCard = ({
   date,
   temperature,
+  minTemperature,
+  maxTemperature,
   weatherIcon,
   weatherDescription,
 }) => (
@@ -12,6 +14,7 @@ const WeatherCard = ({
     <Text style={styles.date}>Prévisions pour le: {date}</Text>
     <Image source={weatherIcon} style={styles.weatherIcon} />
     <Text style={styles.temperature}>{temperature}°C</Text>
+    <Text>Min: {minTemperature}°C, Max: {maxTemperature}°C</Text>
     <Text style={styles.weatherDescription}>{weatherDescription}</Text>
   </View>
 );
