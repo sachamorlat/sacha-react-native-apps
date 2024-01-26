@@ -35,6 +35,11 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
   },
+  textLoader:{
+    fontSize: 17,
+    fontWeight: "bold",
+    backgroundColor:'white',
+  },
   weatherDataLocation: {
     fontSize: 30,
     fontWeight: "bold",
