@@ -48,7 +48,7 @@ const HomePage = () => {
   const renderCocktailItem = ({ item }) => (
     <TouchableOpacity
       onPress={() =>
-        navigation.navigate("RecipeDetail", { cocktailId: item.idDrink })
+        navigation.navigate("RecipeDetail", { cocktail: item })
       }
     >
       <View style={{ margin: 10 }}>

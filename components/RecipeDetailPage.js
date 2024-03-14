@@ -1,63 +1,77 @@
-import React, { useEffect, useState } from "react";
-import { View, Text, Image, StyleSheet } from "react-native";
+import React, { useState, useEffect } from "react";
+import { View, Text, TouchableOpacity, Image } from "react-native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const RecipeDetailPage = ({ route }) => {
-  const { cocktailId } = route.params;
-  const [cocktail, setCocktail] = useState(null);
+  const { cocktail } = route.params;
+  const [isFavorite, setIsFavorite] = useState(false);
 
   useEffect(() => {
-    const fetchCocktailDetails = async () => {
+    const checkFavorite = async () => {
       try {
-        const response = await fetch(
-          `https://www.thecocktaildb.com/api/json/v1/1/lookup.php?i=${cocktailId}`
+        const favoritesString = await AsyncStorage.getItem("favorites");
+        const favoritesArray = favoritesString
+          ? JSON.parse(favoritesString)
+          : [];
+        const isFav = favoritesArray.some(
+          (item) => item.idDrink === cocktail.idDrink
         );
-        const data = await response.json();
-        setCocktail(data.drinks[0]);
+        setIsFavorite(isFav);
       } catch (error) {
-        console.error("Error fetching cocktail details:", error);
+        console.error("Error checking favorite:", error);
       }
     };
 
-    fetchCocktailDetails();
-  }, [cocktailId]);
+    checkFavorite();
+  }, []);
 
-  if (!cocktail) {
-    return (
-      <View style={styles.container}>
-        <Text>Loading...</Text>
-      </View>
-    );
-  }
+  const toggleFavorite = async () => {
+    try {
+      let updatedFavorites = [];
+      const favoritesString = await AsyncStorage.getItem("favorites");
+      if (favoritesString) {
+        updatedFavorites = JSON.parse(favoritesString);
+      }
+
+      const index = updatedFavorites.findIndex(
+        (item) => item.idDrink === cocktail.idDrink
+      );
+      if (index !== -1) {
+        updatedFavorites.splice(index, 1);
+        setIsFavorite(false);
+      } else {
+        updatedFavorites.push(cocktail);
+        setIsFavorite(true);
+      }
+
+      await AsyncStorage.setItem("favorites", JSON.stringify(updatedFavorites));
+    } catch (error) {
+      console.error("Error toggling favorite:", error);
+    }
+  };
 
   return (
-    <View style={styles.container}>
-      <Image source={{ uri: cocktail.strDrinkThumb }} style={styles.image} />
-      <Text style={styles.title}>{cocktail.strDrink}</Text>
-      <Text style={styles.instructions}>{cocktail.strInstructions}</Text>
+    <View>
+      <Text>{cocktail.strDrink}</Text>
+      <Image
+        source={{ uri: cocktail.strDrinkThumb }}
+        style={{ width: 200, height: 200 }}
+      />
+      <TouchableOpacity onPress={toggleFavorite}>
+        {isFavorite ? (
+          <Image
+            source={require("../assets/isFavorite.png")}
+            style={{ width: 30, height: 30 }}
+          />
+        ) : (
+          <Image
+            source={require("../assets/isNotFavorite.png")}
+            style={{ width: 30, height: 30 }}
+          />
+        )}
+      </TouchableOpacity>
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  image: {
-    width: 200,
-    height: 200,
-    borderRadius: 10,
-  },
-  title: {
-    fontSize: 20,
-    fontWeight: "bold",
-    marginTop: 10,
-  },
-  instructions: {
-    marginHorizontal: 20,
-    marginTop: 10,
-  },
-});
 
 export default RecipeDetailPage;
