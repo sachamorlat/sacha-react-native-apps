@@ -1,5 +1,12 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, FlatList, Image, TouchableOpacity } from "react-native";
+import {
+  View,
+  Text,
+  FlatList,
+  Image,
+  TouchableOpacity,
+  StyleSheet,
+} from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const FavoritesPage = ({ navigation }) => {
@@ -17,11 +24,9 @@ const FavoritesPage = ({ navigation }) => {
 
   useEffect(() => {
     const unsubscribe = navigation.addListener("focus", () => {
-      // Rafraîchir les favoris lorsque la page est mise au premier plan
       fetchFavorites();
     });
 
-    // Nettoyer l'écouteur lorsque le composant est démonté
     return unsubscribe;
   }, [navigation]);
 
@@ -29,29 +34,62 @@ const FavoritesPage = ({ navigation }) => {
     <TouchableOpacity
       onPress={() => navigation.navigate("RecipeDetail", { cocktail: item })}
     >
-      <View style={{ margin: 10 }}>
-        <Image
-          source={{ uri: item.strDrinkThumb }}
-          style={{ width: 200, height: 200, borderRadius: 10 }}
-        />
-        <Text>{item.strDrink}</Text>
+      <View style={styles.itemContainer}>
+        <Image source={{ uri: item.strDrinkThumb }} style={styles.image} />
+        <Text style={styles.title}>{item.strDrink}</Text>
       </View>
     </TouchableOpacity>
   );
 
   return (
-    <View>
+    <View style={styles.container}>
       {favorites.length > 0 ? (
         <FlatList
           data={favorites}
           renderItem={renderFavoriteItem}
           keyExtractor={(item) => item.idDrink}
+          contentContainerStyle={styles.listContainer}
         />
       ) : (
-        <Text>Aucun favori pour le moment</Text>
+        <Text style={styles.noFavoritesText}>Aucun favori pour le moment</Text>
       )}
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: "#fff",
+    paddingHorizontal: 10,
+    paddingTop: 20,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  listContainer: {
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  itemContainer: {
+    marginVertical: 10,
+    alignItems: "center",
+  },
+  image: {
+    width: 200,
+    height: 200,
+    borderRadius: 10,
+  },
+  title: {
+    fontSize: 16,
+    fontWeight: "bold",
+    marginTop: 5,
+    textAlign: "center",
+  },
+  noFavoritesText: {
+    fontSize: 18,
+    textAlign: "center",
+    marginTop: 20,
+  },
+});
 
 export default FavoritesPage;

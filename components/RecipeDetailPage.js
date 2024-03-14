@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, TouchableOpacity, Image } from "react-native";
+import { View, Text, TouchableOpacity, Image, StyleSheet } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const RecipeDetailPage = ({ route }) => {
@@ -23,7 +23,7 @@ const RecipeDetailPage = ({ route }) => {
     };
 
     checkFavorite();
-  }, []);
+  }, [cocktail]);
 
   const toggleFavorite = async () => {
     try {
@@ -51,27 +51,53 @@ const RecipeDetailPage = ({ route }) => {
   };
 
   return (
-    <View>
-      <Text>{cocktail.strDrink}</Text>
-      <Image
-        source={{ uri: cocktail.strDrinkThumb }}
-        style={{ width: 200, height: 200 }}
-      />
+    <View style={styles.container}>
+      <Text style={styles.title}>{cocktail.strDrink}</Text>
+      <Image source={{ uri: cocktail.strDrinkThumb }} style={styles.image} />
+      <Text style={styles.description}>
+        Description: {cocktail.strInstructions}
+      </Text>
       <TouchableOpacity onPress={toggleFavorite}>
-        {isFavorite ? (
-          <Image
-            source={require("../assets/isFavorite.png")}
-            style={{ width: 30, height: 30 }}
-          />
-        ) : (
-          <Image
-            source={require("../assets/isNotFavorite.png")}
-            style={{ width: 30, height: 30 }}
-          />
-        )}
+        <Image
+          source={
+            isFavorite
+              ? require("../assets/isFavorite.png")
+              : require("../assets/isNotFavorite.png")
+          }
+          style={styles.favoriteIcon}
+        />
       </TouchableOpacity>
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "#f0f0f0",
+  },
+  title: {
+    fontSize: 24,
+    fontWeight: "bold",
+    marginBottom: 10,
+  },
+  image: {
+    width: 200,
+    height: 200,
+    borderRadius: 10,
+    marginBottom: 10,
+  },
+  description: {
+    fontSize: 16,
+    marginBottom: 10,
+    textAlign: "center",
+  },
+  favoriteIcon: {
+    width: 30,
+    height: 30,
+  },
+});
 
 export default RecipeDetailPage;

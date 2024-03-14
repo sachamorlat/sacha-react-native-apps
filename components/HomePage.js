@@ -6,8 +6,27 @@ import {
   Image,
   ActivityIndicator,
   TouchableOpacity,
+  StyleSheet,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
+
+const styles = StyleSheet.create({
+  cocktailItem: {
+    margin: 10,
+    alignItems: "center",
+  },
+  cocktailImage: {
+    width: 200,
+    height: 200,
+    borderRadius: 10,
+  },
+  cocktailName: {
+    marginTop: 5,
+    fontSize: 18,
+    fontWeight: "bold",
+    textAlign: "center",
+  },
+});
 
 const fetchCocktails = async () => {
   try {
@@ -47,16 +66,14 @@ const HomePage = () => {
 
   const renderCocktailItem = ({ item }) => (
     <TouchableOpacity
-      onPress={() =>
-        navigation.navigate("RecipeDetail", { cocktail: item })
-      }
+      onPress={() => navigation.navigate("RecipeDetail", { cocktail: item })}
     >
-      <View style={{ margin: 10 }}>
+      <View style={styles.cocktailItem}>
         <Image
           source={{ uri: item.strDrinkThumb }}
-          style={{ width: 200, height: 200, borderRadius: 10 }}
+          style={styles.cocktailImage}
         />
-        <Text>{item.strDrink}</Text>
+        <Text style={styles.cocktailName}>{item.strDrink}</Text>
       </View>
     </TouchableOpacity>
   );
