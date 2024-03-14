@@ -1,4 +1,5 @@
 import * as React from "react";
+import { Image } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { createStackNavigator } from "@react-navigation/stack";
@@ -34,12 +35,27 @@ function App() {
         <Tab.Screen
           name="Cocktails"
           component={HomeStack}
-          options={{ tabBarLabel: "Cocktails" }}
+          options={{ 
+            tabBarLabel: "Cocktails",
+            tabBarIcon: ({ color, size }) => (
+              <Image
+                source={require("./assets/cocktail.png")}
+                style={{ width: size, height: size, tintColor: color }}
+              />
+            ), }}
         />
         <Tab.Screen
-          name="Mes cockatails favoris : "
+          name="Mes cocktails favoris"
           component={FavoritesPage}
-          options={{ tabBarLabel: "Favoris" }}
+          options={{
+            tabBarLabel: "Favoris",
+            tabBarIcon: ({ color, size }) => (
+              <Image
+                source={require("./assets/favorite-icon.png")}
+                style={{ width: size, height: size, tintColor: color }}
+              />
+            ),
+          }}
         />
         {/* <Tab.Screen name="Additional" component={AdditionalPage} /> */}
       </Tab.Navigator>
