@@ -1,29 +1,54 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, TouchableOpacity, Image, StyleSheet } from "react-native";
+import { View, Text, TouchableOpacity, Image, StyleSheet, ActivityIndicator } from "react-native";
+import LottieView from "lottie-react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import axios from "axios";
 
 const RecipeDetailPage = ({ route }) => {
-  const { cocktail } = route.params;
+  const { cocktailId } = route.params;
+  const [cocktail, setCocktail] = useState(null);
   const [isFavorite, setIsFavorite] = useState(false);
+  const [loading, setLoading] = useState(true);
+
+  const LoaderAnimation = require("../assets/lottie/cocktail.json");
 
   useEffect(() => {
-    const checkFavorite = async () => {
+    const fetchCocktailDetails = async () => {
       try {
-        const favoritesString = await AsyncStorage.getItem("favorites");
-        const favoritesArray = favoritesString
-          ? JSON.parse(favoritesString)
-          : [];
+        const response = await axios.get(
+          `https://www.thecocktaildb.com/api/json/v1/1/lookup.php?i=${cocktailId}`
+        );
+        const cocktailData = response.data.drinks && response.data.drinks[0];
+        setCocktail(cocktailData);
+        setLoading(true)
+      } catch (error) {
+        console.error("Error fetching cocktail details:", error);
+      }
+    };
+
+    fetchCocktailDetails();
+  }, [cocktailId]);
+
+useEffect(() => {
+  const checkFavorite = async () => {
+    try {
+      const favoritesString = await AsyncStorage.getItem("favorites");
+      const favoritesArray = favoritesString ? JSON.parse(favoritesString) : [];
+
+      if (cocktail && cocktail.idDrink) {
+        // Vérifier si cocktail et cocktail.idDrink sont définis
         const isFav = favoritesArray.some(
           (item) => item.idDrink === cocktail.idDrink
         );
         setIsFavorite(isFav);
-      } catch (error) {
-        console.error("Error checking favorite:", error);
       }
-    };
+    } catch (error) {
+      console.error("Error checking favorite:", error);
+    }
+  };
 
-    checkFavorite();
-  }, [cocktail]);
+  checkFavorite();
+}, [cocktail]);
 
   const toggleFavorite = async () => {
     try {
@@ -49,6 +74,20 @@ const RecipeDetailPage = ({ route }) => {
       console.error("Error toggling favorite:", error);
     }
   };
+
+  
+  if (!cocktail || loading) {
+    return (
+      <View style={styles.loadingContainer}>
+        <LottieView
+          source={LoaderAnimation}
+          autoPlay
+          loop
+          style={styles.loaderAnimation}
+        />
+      </View>
+    );
+  }
 
   return (
     <View style={styles.container}>

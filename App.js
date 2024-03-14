@@ -6,7 +6,7 @@ import { createStackNavigator } from "@react-navigation/stack";
 import HomePage from "./components/HomePage";
 import RecipeDetailPage from "./components/RecipeDetailPage";
 import FavoritesPage from "./components/FavoritesPage";
-// import AdditionalPage from "./components/AdditionalPage";
+import CategoryPage from "./components/CategoryPage";
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
@@ -35,14 +35,28 @@ function App() {
         <Tab.Screen
           name="Cocktails"
           component={HomeStack}
-          options={{ 
+          options={{
             tabBarLabel: "Cocktails",
             tabBarIcon: ({ color, size }) => (
               <Image
                 source={require("./assets/cocktail.png")}
                 style={{ width: size, height: size, tintColor: color }}
               />
-            ), }}
+            ),
+          }}
+        />
+        <Tab.Screen
+          name="CategoryPage"
+          component={CategoryPage}
+          options={{
+            tabBarLabel: "Catégories de Cocktails",
+            tabBarIcon: ({ color, size }) => (
+              <Image
+                source={require("./assets/category.png")}
+                style={{ width: size, height: size, tintColor: color }}
+              />
+            ),
+          }}
         />
         <Tab.Screen
           name="Mes cocktails favoris"
@@ -57,7 +71,6 @@ function App() {
             ),
           }}
         />
-        {/* <Tab.Screen name="Additional" component={AdditionalPage} /> */}
       </Tab.Navigator>
     </NavigationContainer>
   );
