@@ -7,6 +7,7 @@ import HomePage from "./components/HomePage";
 import RecipeDetailPage from "./components/RecipeDetailPage";
 import FavoritesPage from "./components/FavoritesPage";
 import CategoryPage from "./components/CategoryPage";
+import CategoryDetailPage from "./components/CategoryDetailPage";
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
@@ -23,6 +24,11 @@ function HomeStack() {
         name="RecipeDetail"
         component={RecipeDetailPage}
         options={{ headerTitle: "Détail de la recette : " }}
+      />
+      <Stack.Screen
+        name="CategoryDetail"
+        component={CategoryDetailPage}
+        options={{ headerTitle: "Catégorie de boisson : " }}
       />
     </Stack.Navigator>
   );
@@ -46,7 +52,7 @@ function App() {
           }}
         />
         <Tab.Screen
-          name="CategoryPage"
+          name="Catégories de Cocktails"
           component={CategoryPage}
           options={{
             tabBarLabel: "Catégories de Cocktails",

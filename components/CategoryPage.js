@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { Text, View, StyleSheet } from "react-native";
+import { Text, View, StyleSheet, TouchableOpacity } from "react-native";
+import { useNavigation } from "@react-navigation/native";
 
 const styles = StyleSheet.create({
   container: {
@@ -22,6 +23,7 @@ const styles = StyleSheet.create({
 
 function CategoryPage() {
   const [categories, setCategories] = useState([]);
+  const navigation = useNavigation();
 
   useEffect(() => {
     fetch("https://www.thecocktaildb.com/api/json/v1/1/list.php?c=list")
@@ -36,16 +38,24 @@ function CategoryPage() {
       });
   }, []);
 
+  const handleCategoryPress = (category) => {
+    navigation.navigate("CategoryDetail", { category });
+  };
+
   return (
     <View style={styles.container}>
       <Text style={{ fontSize: 24, fontWeight: "bold", marginBottom: 20 }}>
-        Liste des catégories :
+        Liste des catégories
       </Text>
       <View style={styles.categoryList}>
         {categories.map((category, index) => (
-          <Text key={index} style={styles.categoryItem}>
-            {category}
-          </Text>
+          <TouchableOpacity
+            key={index}
+            style={styles.categoryItem}
+            onPress={() => handleCategoryPress(category)}
+          >
+            <Text>{category}</Text>
+          </TouchableOpacity>
         ))}
       </View>
     </View>
