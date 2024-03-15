@@ -1,52 +1,55 @@
-// CategoryDetailPage.js
 import React, { useState, useEffect } from "react";
-import { View, Text, FlatList, Image, TouchableOpacity } from "react-native";
+import { Text, View, StyleSheet } from "react-native";
 
-const CategoryPage = ({ route, navigation }) => {
-  const { category } = route.params;
-  const [categoryDrinks, setCategoryDrinks] = useState([]);
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "#f0f0f0",
+  },
+  categoryList: {
+    marginTop: 20,
+    paddingHorizontal: 20,
+  },
+  categoryItem: {
+    marginBottom: 10,
+    fontSize: 18,
+    fontWeight: "bold",
+    color: "#333",
+  },
+});
+
+function CategoryPage() {
+  const [categories, setCategories] = useState([]);
 
   useEffect(() => {
-    fetchCategoryDrinks();
+    fetch("https://www.thecocktaildb.com/api/json/v1/1/list.php?c=list")
+      .then((response) => response.json())
+      .then((data) => {
+        // Récupérer uniquement les noms des catégories
+        const categoryNames = data.drinks.map((drink) => drink.strCategory);
+        setCategories(categoryNames);
+      })
+      .catch((error) => {
+        console.error("Error fetching categories:", error);
+      });
   }, []);
 
-  const fetchCategoryDrinks = async () => {
-    try {
-      const response = await fetch(
-        `https://www.thecocktaildb.com/api/json/v1/1/filter.php?c=${category}`
-      );
-      const data = await response.json();
-      setCategoryDrinks(data.drinks || []);
-    } catch (error) {
-      console.error("Error fetching category drinks:", error);
-    }
-  };
-
-  const renderCategoryDrinkItem = ({ item }) => (
-    <TouchableOpacity
-      onPress={() => navigation.navigate("DrinkDetail", { drink: item })}
-      style={{ padding: 20, borderBottomWidth: 1, borderBottomColor: "#ccc" }}
-    >
-      <View style={{ flexDirection: "row", alignItems: "center" }}>
-        <Image
-          source={{ uri: item.strDrinkThumb }}
-          style={{ width: 50, height: 50, marginRight: 10 }}
-        />
-        <Text>{item.strDrink}</Text>
-      </View>
-    </TouchableOpacity>
-  );
-
   return (
-    <View>
-      <Text>{category}</Text>
-      <FlatList
-        data={categoryDrinks}
-        renderItem={renderCategoryDrinkItem}
-        keyExtractor={(item) => item.idDrink}
-      />
+    <View style={styles.container}>
+      <Text style={{ fontSize: 24, fontWeight: "bold", marginBottom: 20 }}>
+        Liste des catégories :
+      </Text>
+      <View style={styles.categoryList}>
+        {categories.map((category, index) => (
+          <Text key={index} style={styles.categoryItem}>
+            {category}
+          </Text>
+        ))}
+      </View>
     </View>
   );
-};
+}
 
 export default CategoryPage;
