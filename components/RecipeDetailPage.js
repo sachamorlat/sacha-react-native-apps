@@ -4,7 +4,6 @@ import LottieView from "lottie-react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const RecipeDetailPage = ({ route }) => {
-  const { cocktailId } = route.params;
   const [cocktail, setCocktail] = useState(null);
   const [isFavorite, setIsFavorite] = useState(false);
   const [loading, setLoading] = useState(true);

@@ -6,8 +6,10 @@ import {
   Image,
   ActivityIndicator,
   StyleSheet,
+  TouchableOpacity,
 } from "react-native";
 import axios from "axios";
+import { useNavigation } from "@react-navigation/native";
 
 const styles = StyleSheet.create({
   container: {
@@ -36,6 +38,7 @@ const styles = StyleSheet.create({
 function CategoryDetailPage({ route }) {
   const { category } = route.params;
   const [cocktails, setCocktails] = useState([]);
+  const navigation = useNavigation(); // Obtenir l'objet de navigation
 
   useEffect(() => {
     fetchCocktailsByCategory(category).then((data) => {
@@ -64,14 +67,20 @@ function CategoryDetailPage({ route }) {
   };
 
   const renderCocktailItem = ({ item }) => (
-    <View style={styles.cocktailItem}>
-      <Image
-        source={{ uri: item.strDrinkThumb }}
-        style={styles.cocktailImage}
-      />
-      <Text style={styles.cocktailName}>{item.strDrink}</Text>
-    </View>
+    <TouchableOpacity onPress={() => navigateToRecipeDetailPage(item)}>
+      <View style={styles.cocktailItem}>
+        <Image
+          source={{ uri: item.strDrinkThumb }}
+          style={styles.cocktailImage}
+        />
+        <Text style={styles.cocktailName}>{item.strDrink}</Text>
+      </View>
+    </TouchableOpacity>
   );
+
+  const navigateToRecipeDetailPage = (cocktail) => {
+    navigation.navigate("RecipeDetail", { cocktail });
+  };
 
   return (
     <View style={styles.container}>
