@@ -6,6 +6,7 @@ import {
   Image,
   ActivityIndicator,
   TouchableOpacity,
+  TextInput,
   StyleSheet,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
@@ -13,6 +14,23 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: "#fff",
+    alignItems: "center",
+    justifyContent: "center",
+    padding: 10,
+  },
+  searchInput: {
+    height: 40,
+    borderColor: "#ccc",
+    borderWidth: 1,
+    borderRadius: 5,
+    paddingLeft: 10,
+    marginBottom: 10,
+    width: "100%",
+    fontSize: 16,
+  },
   cocktailItem: {
     margin: 10,
     alignItems: "center",
@@ -39,6 +57,7 @@ const HomePage = () => {
   const [page, setPage] = useState(1);
   const [loading, setLoading] = useState(false);
   const [favorites, setFavorites] = useState([]);
+  const [searchText, setSearchText] = useState("");
   const navigation = useNavigation();
 
   useEffect(() => {
@@ -153,10 +172,25 @@ const HomePage = () => {
     }
   };
 
+  const filterCocktails = () => {
+    if (!searchText) {
+      return cocktails;
+    }
+    return cocktails.filter((cocktail) =>
+      cocktail.strDrink.toLowerCase().includes(searchText.toLowerCase())
+    );
+  };
+
   return (
-    <View>
+    <View style={styles.container}>
+      <TextInput
+        style={styles.searchInput}
+        placeholder="Rechercher par nom de cocktail"
+        onChangeText={(text) => setSearchText(text)}
+        value={searchText}
+      />
       <FlatList
-        data={cocktails}
+        data={filterCocktails()}
         renderItem={renderCocktailItem}
         keyExtractor={(item) => item.idDrink}
         onEndReached={handleLoadMore}
