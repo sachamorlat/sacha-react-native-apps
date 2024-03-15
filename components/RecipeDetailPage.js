@@ -1,11 +1,5 @@
 import React, { useState, useEffect } from "react";
-import {
-  View,
-  Text,
-  TouchableOpacity,
-  Image,
-  StyleSheet,
-} from "react-native";
+import { View, Text, TouchableOpacity, Image, StyleSheet } from "react-native";
 import LottieView from "lottie-react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
@@ -18,24 +12,11 @@ const RecipeDetailPage = ({ route }) => {
   const LoaderAnimation = require("../assets/lottie/cocktail.json");
 
   useEffect(() => {
-    const fetchCocktailDetails = async () => {
-      try {
-        const response = await fetch(
-          `https://www.thecocktaildb.com/api/json/v1/1/lookup.php?i=${cocktailId}`
-        );
-        const responseData = await response.json();
-        console.log(responseData)
-        const cocktailData = responseData.drinks && responseData.drinks[0];
-        console.log(cocktailData)
-        setCocktail(cocktailData);
-        setLoading(false); // Change loading state to false when data is fetched
-      } catch (error) {
-        console.error("Error fetching cocktail details:", error);
-      }
-    };
-
-    fetchCocktailDetails();
-  }, [cocktailId]);
+    if (route.params && route.params.cocktail) {
+      setCocktail(route.params.cocktail);
+      setLoading(false);
+    }
+  }, [route.params]);
 
   useEffect(() => {
     const checkFavorite = async () => {

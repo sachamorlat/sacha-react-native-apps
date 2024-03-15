@@ -91,30 +91,31 @@ const HomePage = () => {
     }
   };
 
-  const fetchCocktailDetails = async (item) => {
-    try {
-      const response = await axios.get(
-        `https://www.thecocktaildb.com/api/json/v1/1/lookup.php?i=${item.idDrink}`
-      );
-      if (response.status !== 200) {
-        console.error(response);
-        throw new Error("La réponse n'est pas OK");
-      }
-      const cocktailDetails = response.data; // Pas besoin de .json() avec axios
-      if (!cocktailDetails.drinks || cocktailDetails.drinks.length === 0) {
-        throw new Error("Aucun détail de cocktail trouvé");
-      }
-      // Accédez au premier élément du tableau de boissons
-      navigation.navigate("RecipeDetail", {
-        cocktailDetails: cocktailDetails.drinks[0],
-      });
-    } catch (error) {
-      console.error(
-        "Erreur lors de la récupération des détails du cocktail :",
-        error
-      );
+const fetchCocktailDetails = async (item) => {
+  try {
+    const response = await axios.get(
+      `https://www.thecocktaildb.com/api/json/v1/1/lookup.php?i=${item.idDrink}`
+    );
+    if (response.status !== 200) {
+      console.error(response);
+      throw new Error("La réponse n'est pas OK");
     }
-  };
+    const cocktailDetails = response.data; 
+    if (!cocktailDetails.drinks || cocktailDetails.drinks.length === 0) {
+      throw new Error("Aucun détail de cocktail trouvé");
+    }
+
+    navigation.navigate("RecipeDetail", {
+      cocktail: cocktailDetails.drinks[0], 
+    });
+  } catch (error) {
+    console.error(
+      "Erreur lors de la récupération des détails du cocktail :",
+      error
+    );
+  }
+};
+
 
   const renderCocktailItem = ({ item }) => (
     <TouchableOpacity onPress={() => fetchCocktailDetails(item)}>
