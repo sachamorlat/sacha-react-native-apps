@@ -18,12 +18,24 @@ function HomeStack() {
       <Stack.Screen
         name="Home"
         component={HomePage}
-        options={{ headerTitle: "Liste des cocktails : " }}
+        options={{ headerShown: false }} // Masquer l'en-tête sur la page d'accueil
       />
       <Stack.Screen
         name="RecipeDetail"
         component={RecipeDetailPage}
         options={{ headerTitle: "Détail de la recette : " }}
+      />
+    </Stack.Navigator>
+  );
+}
+
+function CategoryStack() {
+  return (
+    <Stack.Navigator>
+      <Stack.Screen
+        name="Category"
+        component={CategoryPage}
+        options={{ headerShown: false }} // Masquer l'en-tête sur la page de catégorie
       />
       <Stack.Screen
         name="CategoryDetail"
@@ -53,7 +65,7 @@ function App() {
         />
         <Tab.Screen
           name="Catégories de Cocktails"
-          component={CategoryPage}
+          component={CategoryStack}
           options={{
             tabBarLabel: "Catégories de Cocktails",
             tabBarIcon: ({ color, size }) => (

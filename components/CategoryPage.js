@@ -9,12 +9,17 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     backgroundColor: "#f0f0f0",
   },
-  categoryList: {
-    marginTop: 20,
-    paddingHorizontal: 20,
-  },
   categoryItem: {
+    width: "80%",
+    paddingVertical: 10,
+    paddingHorizontal: 20,
     marginBottom: 10,
+    backgroundColor: "#fff",
+    borderRadius: 5,
+    borderWidth: 1,
+    borderColor: "#333",
+  },
+  categoryText: {
     fontSize: 18,
     fontWeight: "bold",
     color: "#333",
@@ -47,17 +52,15 @@ function CategoryPage() {
       <Text style={{ fontSize: 24, fontWeight: "bold", marginBottom: 20 }}>
         Liste des catégories
       </Text>
-      <View style={styles.categoryList}>
-        {categories.map((category, index) => (
-          <TouchableOpacity
-            key={index}
-            style={styles.categoryItem}
-            onPress={() => handleCategoryPress(category)}
-          >
-            <Text>{category}</Text>
-          </TouchableOpacity>
-        ))}
-      </View>
+      {categories.map((category, index) => (
+        <TouchableOpacity
+          key={index}
+          style={styles.categoryItem}
+          onPress={() => handleCategoryPress(category)}
+        >
+          <Text style={styles.categoryText}>{category}</Text>
+        </TouchableOpacity>
+      ))}
     </View>
   );
 }
