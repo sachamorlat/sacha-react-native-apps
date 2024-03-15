@@ -76,7 +76,7 @@ function CategoryDetailPage({ route }) {
   return (
     <View style={styles.container}>
       <Text style={{ fontSize: 24, fontWeight: "bold", marginBottom: 20 }}>
-        Boissons de la catégorie {category}
+        Catégorie : {category}
       </Text>
       <FlatList
         data={cocktails}

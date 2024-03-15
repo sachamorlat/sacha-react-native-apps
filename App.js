@@ -18,12 +18,12 @@ function HomeStack() {
       <Stack.Screen
         name="Home"
         component={HomePage}
-        options={{ headerShown: false }} // Masquer l'en-tête sur la page d'accueil
+        options={{ headerShown: false }}
       />
       <Stack.Screen
         name="RecipeDetail"
         component={RecipeDetailPage}
-        options={{ headerTitle: "Détail de la recette : " }}
+        options={{ headerShown: false }}
       />
     </Stack.Navigator>
   );
@@ -40,7 +40,7 @@ function CategoryStack() {
       <Stack.Screen
         name="CategoryDetail"
         component={CategoryDetailPage}
-        options={{ headerTitle: "Catégorie de boisson : " }}
+        options={{ headerShown: false }}
       />
     </Stack.Navigator>
   );
