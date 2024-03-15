@@ -1,8 +1,13 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, TouchableOpacity, Image, StyleSheet, ActivityIndicator } from "react-native";
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  Image,
+  StyleSheet,
+} from "react-native";
 import LottieView from "lottie-react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import axios from "axios";
 
 const RecipeDetailPage = ({ route }) => {
   const { cocktailId } = route.params;
@@ -15,12 +20,15 @@ const RecipeDetailPage = ({ route }) => {
   useEffect(() => {
     const fetchCocktailDetails = async () => {
       try {
-        const response = await axios.get(
+        const response = await fetch(
           `https://www.thecocktaildb.com/api/json/v1/1/lookup.php?i=${cocktailId}`
         );
-        const cocktailData = response.data.drinks && response.data.drinks[0];
+        const responseData = await response.json();
+        console.log(responseData)
+        const cocktailData = responseData.drinks && responseData.drinks[0];
+        console.log(cocktailData)
         setCocktail(cocktailData);
-        setLoading(true)
+        setLoading(false); // Change loading state to false when data is fetched
       } catch (error) {
         console.error("Error fetching cocktail details:", error);
       }
@@ -29,26 +37,27 @@ const RecipeDetailPage = ({ route }) => {
     fetchCocktailDetails();
   }, [cocktailId]);
 
-useEffect(() => {
-  const checkFavorite = async () => {
-    try {
-      const favoritesString = await AsyncStorage.getItem("favorites");
-      const favoritesArray = favoritesString ? JSON.parse(favoritesString) : [];
+  useEffect(() => {
+    const checkFavorite = async () => {
+      try {
+        const favoritesString = await AsyncStorage.getItem("favorites");
+        const favoritesArray = favoritesString
+          ? JSON.parse(favoritesString)
+          : [];
 
-      if (cocktail && cocktail.idDrink) {
-        // Vérifier si cocktail et cocktail.idDrink sont définis
-        const isFav = favoritesArray.some(
-          (item) => item.idDrink === cocktail.idDrink
-        );
-        setIsFavorite(isFav);
+        if (cocktail && cocktail.idDrink) {
+          const isFav = favoritesArray.some(
+            (item) => item.idDrink === cocktail.idDrink
+          );
+          setIsFavorite(isFav);
+        }
+      } catch (error) {
+        console.error("Error checking favorite:", error);
       }
-    } catch (error) {
-      console.error("Error checking favorite:", error);
-    }
-  };
+    };
 
-  checkFavorite();
-}, [cocktail]);
+    checkFavorite();
+  }, [cocktail]);
 
   const toggleFavorite = async () => {
     try {
@@ -75,7 +84,6 @@ useEffect(() => {
     }
   };
 
-  
   if (!cocktail || loading) {
     return (
       <View style={styles.loadingContainer}>
@@ -136,6 +144,15 @@ const styles = StyleSheet.create({
   favoriteIcon: {
     width: 30,
     height: 30,
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  loaderAnimation: {
+    width: 200,
+    height: 200,
   },
 });
 
